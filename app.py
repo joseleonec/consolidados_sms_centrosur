@@ -102,7 +102,7 @@ def upload():
 # def success(name):
 #     return 'welcome %s' % name
 
-@app.route('/upload')
+@app.route('/')
 def upload_file():
     return render_template('upload.html')
     # return "hola"
@@ -119,4 +119,4 @@ def upload_file():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False, host="0.0.0.0")
