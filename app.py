@@ -39,7 +39,7 @@ def upload():
         f = request.files.getlist('file')
         for i in f:
             i.save(os.path.join(uploads_dir, secure_filename(i.filename)))
-        read_files(f)
+        read_files(uploads_dir, f)
         # profile = request.files['file']
         # profile.save(os.path.join(uploads_dir, secure_filename(profile.filename)))
 

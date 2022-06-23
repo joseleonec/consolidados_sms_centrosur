@@ -5,6 +5,8 @@ import os
 import glob
 import re
 from unicodedata import normalize
+from werkzeug.utils import secure_filename
+
 home_salida = "./uploads/"
 
 """### Lectura de archivos
@@ -134,7 +136,7 @@ def get_duration_from_time(mensaje):
 # print("================ ARCHIVOS LEIDOS ================" if len(uploaded) > 0 else "")
 
 
-def read_files(files):
+def read_files(uploads_dir, files):
     columnas_utiles_base_fuente1 = [
         "NOMBRES", "TELEFONO", "MENSAJE", "WR", "CUEN"]
     c_bf1 = ["SMSNOMBRE", "SMSCLITEL", "SMSMSG", "WR"]
@@ -148,7 +150,7 @@ def read_files(files):
         columns=columnas_utiles_base_fuente2, dtype=str)
     filenames = []
     for i in files:
-      filenames.append(i.filename)
+      filenames.append(os.path.join(uploads_dir, secure_filename(i.filename)))
     try:
         for fn in filenames:
             # print(('ARCHIVO LEIDO \033[1m' + '"{name}" \033[0m CON TAMAÑO {length} KB').format(
