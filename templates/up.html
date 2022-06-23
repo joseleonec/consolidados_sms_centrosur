@@ -1,0 +1,17 @@
+
+<link rel="stylesheet" href="styles.css">
+
+<h1>Custom File Upload <span>With jQuery and CSS</span></h1>
+
+<div class="custom-file-upload">
+    <!--<label for="file">File: </label>--> 
+    {% comment %} <input type="file" id="file" name="myfiles[]" multiple /> {% endcomment %}
+    <form action = "http://localhost:5000/uploadfile" method = "POST" 
+        enctype = "multipart/form-data">
+        <input id="file" type = "file" name = "file" multiple/>
+        <input type = "submit"/>
+    </form>   
+</div>
+
+<p>See the <a href="https://codepen.io/wallaceerick/pen/ctsCz">Custom Select Menu</a> demo!</p>
+
