@@ -21,8 +21,11 @@
 from consolidación_de_campaña_sms import read_files
 
 import os
+import glob
+
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 from werkzeug.utils import secure_filename
+main_html = 'upload.html'
 
 app = Flask(__name__)
 # app.config['UPLOAD_FOLDER'] = "/uploads/"
@@ -36,6 +39,8 @@ os.makedirs(uploads_dir, exist_ok=True)
 def upload():
     if request.method == 'POST':
         # save the single "profile" file
+        # remove files from uploads_ dir folder
+
         f = request.files.getlist('file')
         for i in f:
             i.save(os.path.join(uploads_dir, secure_filename(i.filename)))
@@ -54,7 +59,6 @@ def upload():
             print(filename)
             # return send_from_directory(directory=uploads_dir, filename=filename)
             return send_from_directory(directory=uploads_dir, path=filename, as_attachment=True)
-
         except:
             filename = "REVISAR CANTIDAD CARACTERES" + "consolidado.xlsx"
             print(uploads_dir)
@@ -63,7 +67,7 @@ def upload():
             return send_from_directory(directory=uploads_dir, path=filename, as_attachment=True)
 
         return redirect(url_for('upload'))
-    return render_template('upload.html')
+    return render_template(main_html)
 
 
 # from flask import Flask, redirect, url_for, request, render_template
@@ -104,7 +108,14 @@ def upload():
 
 @app.route('/')
 def upload_file():
-    return render_template('upload.html')
+    files = glob.glob(uploads_dir + '/*')
+    for f in files:
+        os.remove(f)
+        print("*"*50)
+        print("Removed file: " + f)
+        print("*"*50)
+        
+    return render_template(main_html)
     # return "hola"
 
 
