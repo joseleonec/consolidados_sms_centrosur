@@ -39,6 +39,9 @@ Verifique la implementación navegando a la dirección de su servidor en su nave
 ```sh
 127.0.0.1:5000
 ```
+### Captura de la interfaz web
+![image](https://user-images.githubusercontent.com/38015331/175757792-8d2c284b-89cd-4f43-b613-fcdc38311258.png)
+
 ## Licencia
 
 MIT
