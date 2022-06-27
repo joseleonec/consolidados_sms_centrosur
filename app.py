@@ -8,8 +8,10 @@ from werkzeug.utils import secure_filename
 main_html = 'upload.html'
 
 app = Flask(__name__)
+# set encoding to utf-8
+# app['encoding'] = 'utf-8'
 
-uploads_dir = os.path.join(app.instance_path, '../uploads')
+uploads_dir = os.path.join(app.instance_path, 'uploads')
 os.makedirs(uploads_dir, exist_ok=True)
 
 
@@ -22,18 +24,18 @@ def upload():
         read_files(uploads_dir, f)
         try:
             filename = "consolidado.xlsx"
-            print(uploads_dir)
-            print(filename)
+            print("folder1 = " + uploads_dir)
+            print("filename1 = " + filename)
             # return send_from_directory(directory=uploads_dir, filename=filename)
             return send_from_directory(directory=uploads_dir, path=filename, as_attachment=True)
         except:
-            filename = "REVISAR CANTIDAD CARACTERES" + "consolidado.xlsx"
-            print(uploads_dir)
-            print(filename) 
+            filename = "REVISAR CANTIDAD CARACTERES consolidado.xlsx"
+            print("folder2 = " + uploads_dir)
+            print("filename2 = " + filename)
             # return send_from_directory(directory=uploads_dir, filename=filename)
             return send_from_directory(directory=uploads_dir, path=filename, as_attachment=True)
 
-        return redirect(url_for('upload'))
+        # return redirect(url_for('upload'))
     return render_template(main_html)
 
 @app.route('/')
