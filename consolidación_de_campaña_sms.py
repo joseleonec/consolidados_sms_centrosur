@@ -7,11 +7,10 @@ import re
 from unicodedata import normalize
 from werkzeug.utils import secure_filename
 
-home_salida = "./uploads/"
 
 """### Lectura de archivos
 
-#### Subir los archivos
+# Subir los archivos
 
 Cargar todos los archivos de la carpeta
 """
@@ -148,9 +147,11 @@ def read_files(uploads_dir, files):
     base_fuente1 = pd.DataFrame(columns=columnas_utiles_base_fuente1)
     base_fuente2 = pd.DataFrame(
         columns=columnas_utiles_base_fuente2, dtype=str)
+
     filenames = []
     for i in files:
-      filenames.append(os.path.join(uploads_dir, secure_filename(i.filename)))
+        filenames.append(os.path.join(
+            uploads_dir, secure_filename(i.filename)))
     try:
         for fn in filenames:
             # print(('ARCHIVO LEIDO \033[1m' + '"{name}" \033[0m CON TAMAÑO {length} KB').format(
@@ -166,11 +167,13 @@ def read_files(uploads_dir, files):
                 except:
                     if extensión == "xlsx" or extensión == "xls":
                         base_fuente1 = base_fuente1.append(pd.read_excel(fn, usecols=c_bf1).rename(columns={
-                                                           "SMSNOMBRE": "NOMBRES", "SMSCLITEL": "TELEFONO", "SMSMSG": "MENSAJE", "CUEN": "Cuenta"}))
+                                                            "SMSNOMBRE": "NOMBRES", "SMSCLITEL": "TELEFONO", "SMSMSG": "MENSAJE", "CUEN": "Cuenta"}))
                         archivos_unidos += 1
                     elif extensión == "csv":
                         base_fuente1 = base_fuente1.append(pd.read_csv(
-                            fn, encoding="ISO-8859-1", usecols=columnas_utiles_base_fuente1))
+                            fn, encoding='ISO-8859-1', usecols=columnas_utiles_base_fuente1))
+                        # base_fuente1 = base_fuente1.append(pd.read_csv(
+                        #     fn, encoding="ISO-8859-1", usecols=columnas_utiles_base_fuente1))
                         archivos_unidos += 1
                     else:
                         raise Exception(
@@ -242,7 +245,7 @@ def read_files(uploads_dir, files):
         base_fuente2["CaracteresCelular"] < 10)) & (base_fuente2["CaracteresCliente"] > 1) & (base_fuente2['No. Caractres'] > 50)]
 
     """### AJUSTE DEL MENSAJE PARA QUE TENGA COMO MÁXIMO 150 CARACTERES
-  #### Eliminacion de la letra Ñ y tildes del mensaje
+  # Eliminacion de la letra Ñ y tildes del mensaje
   """
     base_fuente1["Mensaje"] = quitar_tildes(base_fuente1["Mensaje"])
     base_fuente2["Mensaje"] = quitar_tildes(base_fuente2["Mensaje"])
@@ -350,12 +353,17 @@ def read_files(uploads_dir, files):
     """### Generación archivo EXCEL y CSV"""
     from datetime import date
     today = date.today()
-    filename = revisar_longitud + "consolidado"
+    filename = revisar_longitud + "consolidado.xlsx"
     # filename = f"FORMATO PARA CONVERSIÓN {str(today)}"
-    consolidado.to_excel(home_salida + filename + ".xlsx",
+    filename = os.path.join(uploads_dir, secure_filename(filename))
+    print(filename)
+    # consolidado.to_csv(filename,
+    #                      index=False)
+    consolidado.to_excel(filename,
                          index=False, encoding='utf-8-sig')
-    consolidado.to_csv(home_salida + filename + ".csv",
-                       index=False, encoding='utf-8-sig')
+
+    # consolidado.to_csv(home_salida + filename + ".csv",
+    #                    index=False, encoding='utf-8-sig')
     # return File(home_salida + filename + ".csv")
 
 # python main method
