@@ -142,6 +142,8 @@ def read_files(uploads_dir, files):
     columnas_utiles_base_fuente2 = [
         'Nombre', "Celular", 'SMSMSG', "WR", "Cuenta"]
     c_bf2 = ['Nombre', "Celular", 'SMSMSG', "Unnamed: 18", "Cuenta"]
+    c_bf2_2= ['Nombre', "Celular", 'SMSMSG', "wr", "Cuenta"]
+
     # uploaded = files.upload()
     archivos_unidos = 0
     base_fuente1 = pd.DataFrame(columns=columnas_utiles_base_fuente1)
@@ -155,31 +157,29 @@ def read_files(uploads_dir, files):
     try:
         for fn in filenames:
             # print(('ARCHIVO LEIDO \033[1m' + '"{name}" \033[0m CON TAMAÑO {length} KB').format(
-            # name=fn, length=int(len(uploaded[fn]))//(1024)))
+                # name=fn, length=int(len(uploaded[fn]))//(1024)))
             extensión = fn.split(".")[-1]
             try:
-                base_fuente2 = base_fuente2.append(pd.read_excel(
-                    fn, dtype=str, usecols=columnas_utiles_base_fuente2))
+                base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=columnas_utiles_base_fuente2))
             except:
-                try:
-                    base_fuente2 = base_fuente2.append(pd.read_excel(
-                        fn, dtype=str, usecols=c_bf2).rename(columns={"Unnamed: 18": "WR"}))
+                try: 
+                    base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=c_bf2).rename(columns={"Unnamed: 18":"WR"}))
+                    print("hola 0")
                 except:
-                    if extensión == "xlsx" or extensión == "xls":
-                        base_fuente1 = base_fuente1.append(pd.read_excel(fn, usecols=c_bf1).rename(columns={
-                                                            "SMSNOMBRE": "NOMBRES", "SMSCLITEL": "TELEFONO", "SMSMSG": "MENSAJE", "CUEN": "Cuenta"}))
-                        archivos_unidos += 1
-                    elif extensión == "csv":
-                        base_fuente1 = base_fuente1.append(pd.read_csv(
-                            fn, encoding='ISO-8859-1', usecols=columnas_utiles_base_fuente1))
-                        # base_fuente1 = base_fuente1.append(pd.read_csv(
-                        #     fn, encoding="ISO-8859-1", usecols=columnas_utiles_base_fuente1))
-                        archivos_unidos += 1
-                    else:
-                        raise Exception(
-                            "="*45+"\n"+"==TODOS LOS ARCHIVOS NO ESTÁN EL FORMATO CSV, XLSX, XLS=="+"\n"+"="*45)
-        print(colored(
-            "============== \033[1mSE HAN LEIDO CORRECTAMENTE LOS ARCHIVOS \033[0m================", "green"))
+                    try:
+                        base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=c_bf2_2).rename(columns={"wr":"WR"}))
+                    except:
+                        if extensión == "xlsx" or extensión == "xls": 
+                            base_fuente1 = base_fuente1.append(pd.read_excel(fn, usecols=c_bf1 ).rename(columns={"SMSNOMBRE":"NOMBRES", "SMSCLITEL":"TELEFONO", "SMSMSG":"MENSAJE", "CUEN":"Cuenta" }))
+                            archivos_unidos +=1
+                            print("hola 1")
+                        elif extensión == "csv": 
+                        # remove_accent(fn)
+                            base_fuente1 = base_fuente1.append(pd.read_csv(fn, encoding='ISO-8859-1', usecols=columnas_utiles_base_fuente1))
+                            print("hola 2")
+                            archivos_unidos +=1
+                        else:
+                            raise Exception("="*45+"\n"+"==TODOS LOS ARCHIVOS NO ESTÁN EL FORMATO CSV, XLSX, XLS=="+"\n"+"="*45)
     except Exception as e:
         # print(traceback.format_exc())
         # or
