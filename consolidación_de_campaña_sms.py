@@ -136,14 +136,15 @@ def get_duration_from_time(mensaje):
 
 
 def read_files(uploads_dir, files):
+    # Columnas a utilizar de la fuente 1
     columnas_utiles_base_fuente1 = [
         "NOMBRES", "TELEFONO", "MENSAJE", "WR", "CUEN"]
     c_bf1 = ["SMSNOMBRE", "SMSCLITEL", "SMSMSG", "WR"]
+    # Columnas a utilizar de la fuente 2
     columnas_utiles_base_fuente2 = [
         'Nombre', "Celular", 'SMSMSG', "WR", "Cuenta"]
     c_bf2 = ['Nombre', "Celular", 'SMSMSG', "Unnamed: 18", "Cuenta"]
     c_bf2_2= ['Nombre', "Celular", 'SMSMSG', "wr", "Cuenta"]
-
     # uploaded = files.upload()
     archivos_unidos = 0
     base_fuente1 = pd.DataFrame(columns=columnas_utiles_base_fuente1)
@@ -188,7 +189,7 @@ def read_files(uploads_dir, files):
         raise Exception(str(e))
     # return base_fuente1, base_fuente2
 
-    # Selleccionamos solo las columnas utiles de la fuente 1
+    # Seleccionamos solo las columnas utiles de la fuente 1
     # columnas_utiles_base_fuente1 = ["NOMBRES", "TELEFONO", "MENSAJE", "WR", "CUEN"]
     base_fuente1 = base_fuente1[columnas_utiles_base_fuente1]
     columnas_utiles_base_fuente2 = [
@@ -310,7 +311,7 @@ def read_files(uploads_dir, files):
 
     consolidado[["CONVENCIONAL", "OFICINA", "CORREO_CLIENTE"]] = ""
 
-    consolidado["OFICINA"] = consolidado["WR"]
+    consolidado["CORREO_CLIENTE"] = consolidado["WR"]
     consolidado.drop(columns=["WR"], inplace=True)
     consolidado.drop(columns=["CUEN"], inplace=True)
 
