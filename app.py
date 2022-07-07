@@ -29,7 +29,7 @@ def upload():
             # return send_from_directory(directory=uploads_dir, filename=filename)
             return send_from_directory(directory=uploads_dir, path=filename, as_attachment=True)
         except:
-            filename = "REVISAR CANTIDAD CARACTERES consolidado.xlsx"
+            filename = "REVISAR_CANTIDAD_CARACTERESconsolidado.xlsx"
             print("folder2 = " + uploads_dir)
             print("filename2 = " + filename)
             # return send_from_directory(directory=uploads_dir, filename=filename)

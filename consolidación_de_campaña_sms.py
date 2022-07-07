@@ -92,7 +92,7 @@ def reducir_caracteres_mensaje(df):
     df["Mensaje corto"] = df["Mensaje corto"].apply(
         lambda x: x.replace("en el sector", "en") if len(x) > 150 else x)
     # df["Mensaje corto"] = df["Mensaje corto"].apply(lambda x : x.replace("por", " por") if len(x) < 150 else x)
-    # df["Mensaje corto"] = df["Mensaje corto"].apply(lambda x : x.replace("Debido a", "Por") if len(x) > 150 else x)
+    df["Mensaje corto"] = df["Mensaje corto"].apply(lambda x : x.replace("Debido a", "Por") if len(x) > 150 else x)
     # df["Mensaje corto"] = df["Mensaje corto"].apply(lambda x : x.replace("Comunica", "informa") if len(x) > 150 else x)
     # df["Mensaje corto"] = df["Mensaje corto"].apply(lambda x : x.replace("CENTROSUR informa", "CENTROSUR") if len(x) > 150 else x)
     # df["Mensaje corto"] = df["Mensaje corto"].apply(lambda x : x.replace("mejoras en el ", "mejoras ") if len(x) > 150 else x)
@@ -138,13 +138,12 @@ def get_duration_from_time(mensaje):
 def read_files(uploads_dir, files):
     # Columnas a utilizar de la fuente 1
     columnas_utiles_base_fuente1 = [
-        "NOMBRES", "TELEFONO", "MENSAJE", "WR", "CUEN"]
-    c_bf1 = ["SMSNOMBRE", "SMSCLITEL", "SMSMSG", "WR"]
+        "NOMBRES", "TELEFONO", "MENSAJE", "CUEN"]
+    c_bf1 = ["SMSNOMBRE", "SMSCLITEL", "SMSMSG", "SMSCLICOD" ]
     # Columnas a utilizar de la fuente 2
     columnas_utiles_base_fuente2 = [
-        'Nombre', "Celular", 'SMSMSG', "WR", "Cuenta"]
-    c_bf2 = ['Nombre', "Celular", 'SMSMSG', "Unnamed: 18", "Cuenta"]
-    c_bf2_2= ['Nombre', "Celular", 'SMSMSG', "wr", "Cuenta"]
+        'Nombre', "Celular", 'SMSMSG', "Cuenta"]
+    c_bf2 = ['Nombre', "Celular", 'SMSMSG', "Cuenta"]
     # uploaded = files.upload()
     archivos_unidos = 0
     base_fuente1 = pd.DataFrame(columns=columnas_utiles_base_fuente1)
@@ -157,30 +156,25 @@ def read_files(uploads_dir, files):
             uploads_dir, secure_filename(i.filename)))
     try:
         for fn in filenames:
-            # print(('ARCHIVO LEIDO \033[1m' + '"{name}" \033[0m CON TAMAÑO {length} KB').format(
-                # name=fn, length=int(len(uploaded[fn]))//(1024)))
             extensión = fn.split(".")[-1]
             try:
                 base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=columnas_utiles_base_fuente2))
             except:
                 try: 
-                    base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=c_bf2).rename(columns={"Unnamed: 18":"WR"}))
+                    base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=c_bf2))
                     print("hola 0")
                 except:
-                    try:
-                        base_fuente2 = base_fuente2.append(pd.read_excel(fn, dtype=str, usecols=c_bf2_2).rename(columns={"wr":"WR"}))
-                    except:
-                        if extensión == "xlsx" or extensión == "xls": 
-                            base_fuente1 = base_fuente1.append(pd.read_excel(fn, usecols=c_bf1 ).rename(columns={"SMSNOMBRE":"NOMBRES", "SMSCLITEL":"TELEFONO", "SMSMSG":"MENSAJE", "CUEN":"Cuenta" }))
-                            archivos_unidos +=1
-                            print("hola 1")
-                        elif extensión == "csv": 
-                        # remove_accent(fn)
-                            base_fuente1 = base_fuente1.append(pd.read_csv(fn, encoding='ISO-8859-1', usecols=columnas_utiles_base_fuente1))
-                            print("hola 2")
-                            archivos_unidos +=1
-                        else:
-                            raise Exception("="*45+"\n"+"==TODOS LOS ARCHIVOS NO ESTÁN EL FORMATO CSV, XLSX, XLS=="+"\n"+"="*45)
+                    if extensión == "xlsx" or extensión == "xls":
+                        base_fuente1 = base_fuente1.append(pd.read_excel(fn, usecols=c_bf1 ).rename(columns={"SMSNOMBRE":"NOMBRES", "SMSCLITEL":"TELEFONO", "SMSMSG":"MENSAJE", "CUEN":"Cuenta" }))
+                        archivos_unidos +=1
+                        print("hola 1")
+                    elif extensión == "csv": 
+                    # remove_accent(fn)
+                        base_fuente1 = base_fuente1.append(pd.read_csv(fn, encoding='ISO-8859-1', usecols=columnas_utiles_base_fuente1))
+                        print("hola 2")
+                        archivos_unidos +=1
+                    else:
+                        raise Exception("="*45+"\n"+"==TODOS LOS ARCHIVOS NO ESTÁN EL FORMATO CSV, XLSX, XLS=="+"\n"+"="*45)
     except Exception as e:
         # print(traceback.format_exc())
         # or
@@ -193,7 +187,7 @@ def read_files(uploads_dir, files):
     # columnas_utiles_base_fuente1 = ["NOMBRES", "TELEFONO", "MENSAJE", "WR", "CUEN"]
     base_fuente1 = base_fuente1[columnas_utiles_base_fuente1]
     columnas_utiles_base_fuente2 = [
-        'Nombre', "Celular", 'SMSMSG', "WR", "Cuenta"]
+        'Nombre', "Celular", 'SMSMSG', "Cuenta"]
     base_fuente2 = base_fuente2[columnas_utiles_base_fuente2]
 
     # Renombrar columnas
@@ -231,7 +225,7 @@ def read_files(uploads_dir, files):
         lambda x: len(str(x)))
     base_fuente2['No. Caractres'] = base_fuente2['Mensaje'].apply(
         lambda x: len(str(x)))
-    base_fuente2['WR'] = base_fuente2['WR'].apply(lambda x: "WR " + str(x))
+    # base_fuente2['WR'] = base_fuente2['WR'].apply(lambda x: "WR " + str(x))
     base_fuente2['CUEN'] = base_fuente2['CUEN'].apply(
         lambda x: "0"*(12-len(str(x))) + str(x))
 
@@ -283,19 +277,19 @@ def read_files(uploads_dir, files):
     consolidado.reset_index(drop=True, inplace=True)
     # msg = consolidado["Mensaje"].tail(1)[0]
     msg = consolidado["Mensaje"].iat[-1]
-    wr = consolidado["WR"].iat[-1]
+    # wr = consolidado["WR"].iat[-1]
     cuen = consolidado["CUEN"].iat[-1]
     consolidado.loc[-1] = ["Richar Edmundo Samaniego Leòn ",
-                           "0984363757", wr, cuen, msg]
+                           "0984363757", cuen, msg]
     consolidado.reset_index(drop=True, inplace=True)
     consolidado.loc[-1] = ["Juana Cristina Idrovo Cordero",
-                           "0984366133", wr, cuen, msg]
+                           "0984366133", cuen, msg]
     consolidado.reset_index(drop=True, inplace=True)
     consolidado.loc[-1] = ["karla Guillèn Montenegro",
-                           "0984822092", wr, cuen, msg]
+                           "0984822092", cuen, msg]
     consolidado.reset_index(drop=True, inplace=True)
     consolidado.loc[-1] = ["Juan Fernando Bueno bailòn ",
-                           "0992956294", wr, cuen, msg]
+                           "0992956294", cuen, msg]
     consolidado.reset_index(drop=True, inplace=True)
 
     # consolidado.loc[-1] = ["Richar Edmundo Samaniego Leòn ", "0984363757", .tail(1)[0]]
@@ -311,8 +305,8 @@ def read_files(uploads_dir, files):
 
     consolidado[["CONVENCIONAL", "OFICINA", "CORREO_CLIENTE"]] = ""
 
-    consolidado["CORREO_CLIENTE"] = consolidado["WR"]
-    consolidado.drop(columns=["WR"], inplace=True)
+    # consolidado["CORREO_CLIENTE"] = consolidado["WR"]
+    # consolidado.drop(columns=["WR"], inplace=True)
     consolidado.drop(columns=["CUEN"], inplace=True)
 
     consolidado = consolidado[columnas_consolidado]
